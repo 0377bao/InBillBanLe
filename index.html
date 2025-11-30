@@ -221,6 +221,49 @@
                 border-bottom: none;
             }
         }
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                width: 100%;
+                padding: 10px;
+                min-height: auto;
+            }
+            .controls {
+                position: static;
+                flex-direction: row;
+                justify-content: flex-end;
+                margin-bottom: 10px;
+                padding: 0;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .info-row {
+                flex-direction: column;
+                margin-bottom: 10px;
+            }
+            .info-label {
+                margin-bottom: 2px;
+            }
+            .table-wrapper {
+                overflow-x: auto;
+                margin-bottom: 20px;
+                border: 1px solid #eee;
+            }
+            table {
+                min-width: 800px; /* Ensure table is wide enough to be readable */
+            }
+            .signatures {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .signature-block {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -270,6 +313,7 @@
             </div>
         </div>
 
+        <div class="table-wrapper">
         <table id="productTable">
             <thead>
                 <tr>
@@ -286,6 +330,7 @@
             <tbody>
             </tbody>
         </table>
+        </div>
 
         <div class="footer-summary">
             <div class="summary-row">
