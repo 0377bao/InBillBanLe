@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Bán Hàng</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 14px;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 210mm; /* A4 width */
+            min-height: 297mm;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        .title {
+            text-align: left;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-transform: uppercase;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            min-width: 150px;
+        }
+
+        .info-input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px dotted #000;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+
+        .col-stt { width: 40px; }
+        .col-name { width: 30%; text-align: left; }
+        .col-spec { width: 15%; }
+        .col-qty { width: 80px; }
+        .col-unit { width: 60px; }
+        .col-price { width: 100px; }
+        .col-amount { width: 100px; }
+        .col-note { width: 100px; }
+
+        .table-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            text-align: center;
+            font-family: inherit;
+            font-size: inherit;
+            background: transparent;
+        }
+        
+        .table-input.text-left {
+            text-align: left;
+        }
+
+        .table-input.number {
+            text-align: right;
+        }
+
+        .footer-summary {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-bottom: 30px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            width: 300px;
+            margin-bottom: 5px;
+        }
+
+        .summary-label {
+            font-weight: bold;
+        }
+
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+
+        .signature-block {
+            text-align: center;
+            width: 40%;
+        }
+
+        .signature-title {
+            font-weight: bold;
+            margin-bottom: 60px;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #a71d2a;
+        }
+
+        td {
+            position: relative; /* For absolute positioning of delete button */
+        }
+
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+            font-weight: bold;
+            display: none; /* Hidden by default */
+            position: absolute;
+            right: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #fff;
+            padding: 0 4px;
+            z-index: 10;
+        }
+
+        tr:hover .delete-btn {
+            display: block;
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
+            .controls {
+                display: none;
+            }
+            .delete-btn {
+                display: none !important;
+            }
+            .info-input {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button class="btn" onclick="addRow()">+ Thêm dòng</button>
+        <button class="btn" onclick="window.print()">In / Tải PDF</button>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <p>Công ty/ 公司名称: CÔNG TY TNHH GTGT</p>
+            <p>Địa chỉ / 地址: A5/21D đường kênh 7, Xã Tân Kiên, Huyện Bình Chánh, Thành phố Hồ Chí Minh</p>
+            <p>Điện thoại / 电话:</p>
+        </div>
+
+        <div class="title">PHIẾU BÁN HÀNG/出货单</div>
+
+        <div class="info-grid">
+            <div>
+                <div class="info-row">
+                    <span class="info-label">Tên KH/客户名称:</span>
+                    <input type="text" class="info-input" value="">
+                </div>
+                <div class="info-row">
+                    <span class="info-label">TEL KH/电话联络:</span>
+                    <input type="text" class="info-input" value="">
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Đ.c nhận hàng /收货地址:</span>
+                    <input type="text" class="info-input">
+                </div>
+            </div>
+            <div>
+                <div class="info-row">
+                    <span class="info-label">Ngày giao hàng /出货日:</span>
+                    <input id="ngayGiaoHang" type="text" class="info-input" value="">
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Số phiếu giao hàng/出货单号:</span>
+                    <input type="text" class="info-input">
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Số đơn đặt hàng /订单号:</span>
+                    <input type="text" class="info-input">
+                </div>
+            </div>
+        </div>
+
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th class="col-stt">STT</th>
+                    <th class="col-name">Tên hàng hóa</th>
+                    <th class="col-spec">Quy cách</th>
+                    <th class="col-qty">Số lượng</th>
+                    <th class="col-unit">DVT</th>
+                    <th class="col-price">Đơn giá</th>
+                    <th class="col-amount">Thành tiền</th>
+                    <th class="col-note">Ghi chú</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <div class="footer-summary">
+            <div class="summary-row">
+                <span class="summary-label">Tổng / 小计:</span>
+                <span id="totalAmount">0</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Thuế GTGT / 税率0%:</span>
+                <span>¥0,00</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Tổng tiền / 总计:</span>
+                <span id="grandTotal">0</span>
+            </div>
+        </div>
+
+        <div class="signatures">
+            <div class="signature-block">
+                <div class="signature-title">Người giao hàng/送货人:</div>
+            </div>
+            <div class="signature-block">
+                <div class="signature-title">Người nhận hàng/ 收货人:</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function parseNumber(str) {
+            return parseFloat(str.replace(/\./g, '').replace(/,/g, '.')) || 0;
+        }
+
+        function updateTotals() {
+            const rows = document.querySelectorAll('#productTable tbody tr');
+            let total = 0;
+
+            rows.forEach((row, index) => {
+                // Update STT
+                row.querySelector('.stt').textContent = index + 1;
+
+                const qtyInput = row.querySelector('.qty');
+                const priceInput = row.querySelector('.price');
+                const amountSpan = row.querySelector('.amount');
+
+                const qty = parseNumber(qtyInput.value);
+                const price = parseNumber(priceInput.value);
+                const amount = qty * price;
+
+                amountSpan.textContent = formatNumber(amount);
+                total += amount;
+            });
+
+            const totalStr = formatNumber(total);
+            document.getElementById('totalAmount').textContent = totalStr;
+            document.getElementById('grandTotal').textContent = totalStr; // Tax is 0
+        }
+
+        function addRow(data = {}) {
+            const tbody = document.querySelector('#productTable tbody');
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+                <td class="stt"></td>
+                <td><input type="text" class="table-input text-left" value="${data.name || ''}" placeholder="Tên hàng"></td>
+                <td><input type="text" class="table-input" value="${data.spec || ''}" placeholder="Quy cách"></td>
+                <td><input type="text" class="table-input number qty" value="${data.qty || ''}" oninput="updateTotals()"></td>
+                <td><input type="text" class="table-input" value="${data.unit || ''}" placeholder="DVT"></td>
+                <td><input type="text" class="table-input number price" value="${data.price || ''}" oninput="updateTotals()"></td>
+                <td class="amount number">0</td>
+                <td>
+                    <input type="text" class="table-input" value="${data.note || ''}">
+                    <span class="delete-btn" onclick="this.closest('tr').remove(); updateTotals()">x</span>
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+            updateTotals();
+        }
+
+        window.onload = function() {
+          let today = new Date();
+          const dd = String(today.getDate()).padStart(2, '0');
+          const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+          const yyyy = today.getFullYear();
+          
+          today = yyyy + '/' + mm + '/' + dd;
+
+          document.getElementById('ngayGiaoHang').value = today;
+        };
+
+
+    </script>
+</body>
+</html>
