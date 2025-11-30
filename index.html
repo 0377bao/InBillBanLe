@@ -202,14 +202,18 @@
         }
 
         @media print {
+            @page {
+                margin: 0;
+            }
             body {
                 background-color: #fff;
-                padding: 0;
+                padding: 15mm; /* Add padding to simulate margins since we removed browser margins */
             }
             .container {
                 box-shadow: none;
                 margin: 0;
                 width: 100%;
+                min-height: auto; /* Remove fixed height to prevent extra blank page */
             }
             .controls {
                 display: none;
@@ -220,47 +224,160 @@
             .info-input {
                 border-bottom: none;
             }
+            .table-wrapper {
+                border: none;
+                overflow: visible;
+            }
         }
         @media screen and (max-width: 768px) {
             body {
-                padding: 5px;
+                padding: 10px;
+                background-color: #f5f5f5;
             }
             .container {
                 width: 100%;
-                padding: 10px;
+                padding: 15px;
                 min-height: auto;
+                background: transparent;
+                box-shadow: none;
+            }
+            .header, .title, .signatures {
+                display: none; /* Hide formal header/footer on mobile for cleaner UI */
             }
             .controls {
-                position: static;
-                flex-direction: row;
-                justify-content: flex-end;
-                margin-bottom: 10px;
-                padding: 0;
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                top: auto;
+                flex-direction: column;
+                z-index: 100;
+                gap: 15px;
+            }
+            .btn {
+                border-radius: 50px;
+                padding: 15px 25px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                font-weight: bold;
             }
             .info-grid {
-                grid-template-columns: 1fr;
-                gap: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                background: #fff;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                margin-bottom: 20px;
             }
             .info-row {
                 flex-direction: column;
-                margin-bottom: 10px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+            .info-row:last-child {
+                border-bottom: none;
             }
             .info-label {
-                margin-bottom: 2px;
+                margin-bottom: 5px;
+                color: #666;
+                font-size: 12px;
+                text-transform: uppercase;
             }
+            .info-input {
+                border: 1px solid #ddd;
+                padding: 8px;
+                border-radius: 5px;
+                background: #f9f9f9;
+            }
+            
+            /* Table to Card Transformation */
             .table-wrapper {
-                overflow-x: auto;
-                margin-bottom: 20px;
+                border: none;
+                overflow: visible;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                margin-bottom: 15px;
+                background: #fff;
+                padding: 15px;
+                padding-bottom: 60px; /* Space for delete button */
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                position: relative;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding: 5px 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                text-align: right;
+            }
+            td:before {
+                content: attr(data-label);
+                font-weight: bold;
+                text-align: left;
+                color: #444;
+                flex: 1;
+                margin-right: 10px;
+                font-size: 13px;
+            }
+            .table-input {
+                text-align: right;
+                width: 60%;
                 border: 1px solid #eee;
+                padding: 8px;
+                border-radius: 5px;
+                background: #fff;
             }
-            table {
-                min-width: 800px; /* Ensure table is wide enough to be readable */
+            .col-stt {
+                display: none; /* Hide STT on mobile cards */
             }
-            .signatures {
-                flex-direction: column;
-                gap: 30px;
+            .delete-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                bottom: 15px;
+                right: 15px;
+                top: auto;
+                width: auto;
+                height: 36px;
+                padding: 0 20px;
+                background-color: #ffebee;
+                color: #d32f2f;
+                border-radius: 18px;
+                font-size: 0; /* Hide the 'x' */
+                font-weight: bold;
+                border: 1px solid #ffcdd2;
+                z-index: 5;
+                box-shadow: none;
             }
-            .signature-block {
+            .delete-btn::after {
+                content: "Xóa sản phẩm";
+                font-size: 13px;
+                text-transform: uppercase;
+            }
+            
+            /* Footer Summary Mobile */
+            .footer-summary {
+                background: #fff;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                width: 100%;
+                box-sizing: border-box;
+                align-items: stretch;
+            }
+            .summary-row {
                 width: 100%;
             }
         }
@@ -396,14 +513,14 @@
             const tr = document.createElement('tr');
 
             tr.innerHTML = `
-                <td class="stt"></td>
-                <td><input type="text" class="table-input text-left" value="${data.name || ''}" placeholder="Tên hàng"></td>
-                <td><input type="text" class="table-input" value="${data.spec || ''}" placeholder="Quy cách"></td>
-                <td><input type="text" class="table-input number qty" value="${data.qty || ''}" oninput="updateTotals()"></td>
-                <td><input type="text" class="table-input" value="${data.unit || ''}" placeholder="DVT"></td>
-                <td><input type="text" class="table-input number price" value="${data.price || ''}" oninput="updateTotals()"></td>
-                <td class="amount number">0</td>
-                <td>
+                <td class="stt" data-label="STT"></td>
+                <td data-label="Tên hàng hóa"><input type="text" class="table-input text-left" value="${data.name || ''}" placeholder="Tên hàng"></td>
+                <td data-label="Quy cách"><input type="text" class="table-input" value="${data.spec || ''}" placeholder="Quy cách"></td>
+                <td data-label="Số lượng"><input type="text" class="table-input qty" value="${data.qty || ''}" oninput="updateTotals()"></td>
+                <td data-label="DVT"><input type="text" class="table-input" value="${data.unit || ''}" placeholder="DVT"></td>
+                <td data-label="Đơn giá"><input type="text" class="table-input price" value="${data.price || ''}" oninput="updateTotals()"></td>
+                <td class="amount" data-label="Thành tiền">0</td>
+                <td data-label="Ghi chú">
                     <input type="text" class="table-input" value="${data.note || ''}">
                     <span class="delete-btn" onclick="this.closest('tr').remove(); updateTotals()">x</span>
                 </td>
