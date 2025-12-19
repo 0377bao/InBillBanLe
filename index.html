@@ -132,11 +132,18 @@
             text-align: right;
         }
 
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
         .footer-summary {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            margin-bottom: 30px;
         }
 
         .summary-row {
@@ -152,13 +159,15 @@
 
         .signatures {
             display: flex;
-            justify-content: space-between;
-            margin-top: 50px;
+            justify-content: flex-start;
+            gap: 50px;
+            margin-top: 0;
+            padding-right: 20px;
         }
 
         .signature-block {
             text-align: center;
-            width: 40%;
+            min-width: 100px;
         }
 
         .signature-title {
@@ -274,8 +283,11 @@
             }
             
             /* Ensure elements hidden on mobile screen are visible on print */
-            .header, .title, .signatures {
+            .header, .title {
                 display: block !important;
+            }
+            .signatures {
+                display: flex !important;
             }
             
             /* Reset table display for print if it was changed to block/card on mobile */
@@ -315,7 +327,7 @@
             .info-grid {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr !important;
-                gap: 10px !important;
+                gap: 5px !important;
             }
             .info-row {
                 flex-direction: row !important;
@@ -347,7 +359,7 @@
         }
         @media screen and (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 5px;
                 background-color: #f5f5f5;
             }
             .container {
@@ -560,27 +572,29 @@
         </table>
         </div>
 
-        <div class="footer-summary">
-            <div class="summary-row">
-                <span class="summary-label">Tổng / 小计:</span>
-                <span id="totalAmount">0</span>
+        <div class="footer-container">
+            <div class="signatures">
+                <div class="signature-block">
+                    <div class="signature-title">Người giao hàng:</div>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-title">Người nhận hàng:</div>
+                </div>
             </div>
-            <div class="summary-row">
-                <span class="summary-label">Thuế GTGT / 税率0%:</span>
-                <span>¥0,00</span>
-            </div>
-            <div class="summary-row">
-                <span class="summary-label">Tổng tiền / 总计:</span>
-                <span id="grandTotal">0</span>
-            </div>
-        </div>
 
-        <div class="signatures">
-            <div class="signature-block">
-                <div class="signature-title">Người giao hàng/送货人:</div>
-            </div>
-            <div class="signature-block">
-                <div class="signature-title">Người nhận hàng/ 收货人:</div>
+            <div class="footer-summary">
+                <div class="summary-row">
+                    <span class="summary-label">Tổng / 小计:</span>
+                    <span id="totalAmount">0</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Thuế GTGT / 税率0%:</span>
+                    <span>¥0,00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Tổng tiền / 总计:</span>
+                    <span id="grandTotal">0</span>
+                </div>
             </div>
         </div>
     </div>
