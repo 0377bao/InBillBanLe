@@ -28,13 +28,35 @@
             margin-bottom: 20px;
         }
 
-        .header p {
+        .header-row {
+            display: flex;
+            align-items: baseline;
             margin: 5px 0;
             font-weight: bold;
         }
 
+        .header-label {
+            white-space: nowrap;
+        }
+
+        .header-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: bold;
+            background: transparent;
+            margin-left: 5px;
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        .header-input:focus {
+            border-bottom-color: #007bff;
+        }
+
         .title {
-            text-align: left;
+            text-align: center;
             font-size: 18px;
             font-weight: bold;
             margin: 20px 0;
@@ -273,8 +295,8 @@
             .delete-btn {
                 display: none !important;
             }
-            .info-input {
-                border-bottom: none;
+            .info-input, .header-input {
+                border-bottom: none !important;
             }
             .table-wrapper {
                 border: none;
@@ -366,8 +388,41 @@
                 background: transparent;
                 box-shadow: none;
             }
-            .header, .title, .signatures {
+            .title, .signatures {
                 display: none; /* Hide formal header/footer on mobile for cleaner UI */
+            }
+            .header {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                background: #fff;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                margin-bottom: 20px;
+            }
+            .header-row {
+                display: flex;
+                flex-direction: column;
+                border-bottom: 1px solid #eee;
+                align-items: stretch;
+            }
+            .header-row:last-child {
+                border-bottom: none;
+            }
+            .header-label {
+                margin-bottom: 5px;
+                color: #666;
+                font-size: 12px;
+                text-transform: uppercase;
+                white-space: normal;
+            }
+            .header-input {
+                border: 1px solid #ddd;
+                padding: 8px;
+                border-radius: 5px;
+                background: #f9f9f9;
+                margin-left: 0;
             }
             .controls {
                 position: fixed;
@@ -512,9 +567,18 @@
 
     <div class="container">
         <div class="header">
-            <p>Công ty/ 公司名称: CÔNG TY TNHH GTGT</p>
-            <p>Địa chỉ / 地址: A5/21D đường kênh 7, Xã Tân Kiên, Huyện Bình Chánh, Thành phố Hồ Chí Minh</p>
-            <p>Điện thoại / 电话:</p>
+            <div class="header-row">
+                <span class="header-label">Công ty/ 公司名称:</span>
+                <input type="text" class="header-input" value="">
+            </div>
+            <div class="header-row">
+                <span class="header-label">Địa chỉ / 地址:</span>
+                <input type="text" class="header-input" value="">
+            </div>
+            <div class="header-row">
+                <span class="header-label">Điện thoại / 电话:</span>
+                <input type="text" class="header-input" value="">
+            </div>
         </div>
 
         <div class="title">PHIẾU BÁN HÀNG/出货单</div>
